@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{Shared/_Layout}"
+>
+    <head>
+        <meta charset="UTF-8" />
+        <title th:text="${title}"></title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <form
+                        class="form-horizontal"
+                        th:object="${employeeDTO}"
+                        th:action="@{/Employee/Save}"
+                        enctype="multipart/form-data"
+                        th:method="post"
+                    >
+                        <!-- Hidden field for employeeId (if update case) -->
+                        <div th:if="${employeeDTO.employeeId != null}">
+                            <input type="hidden" th:field="*{employeeId}" />
+                        </div>
+
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Họ và tên:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" th:field="*{fullName}" autofocus />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('fullName')}"
+                                    th:errors="*{fullName}"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- DOB -->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Ngày sinh:</label>
+                            <div class="col-sm-10">
+                                <input
+                                    type="text"
+                                    class="form-control date-picker"
+                                    th:field="*{DOB}"
+                                    th:value="${#temporals.format(DOB, 'dd/MM/yyyy')}"
+                                />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('DOB')}"
+                                    th:errors="*{DOB}"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Địa chỉ:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" th:field="*{address}" />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('address')}"
+                                    th:errors="*{address}"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Điện thoại:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" th:field="*{phone}" />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('phone')}"
+                                    th:errors="*{phone}"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Email:</label>
+                            <div class="col-sm-10">
+                                <input type="email" class="form-control" th:field="*{email}" />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('email')}"
+                                    th:errors="*{email}"
+                                ></div>
+                            </div>
+                        </div>
+
+                        <!-- IsWorking -->
+                        <div class="form-group" th:if="${employeeDTO.isIsWorking()}">
+                            <div class="col-lg-offset-2 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" th:field="*{isWorking}" />
+                                        Nhân viên đang làm việc
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Photo -->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Ảnh cá nhân:</label>
+                            <div class="col-sm-10">
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    name="uploadPhoto"
+                                    accept="image/*"
+                                    onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Photo preview -->
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-sm-10">
+                                <img
+                                    id="Photo"
+                                    th:src="@{/images/employees/{photo}(photo=${employeeDTO.photo})}"
+                                    class="img img-bordered"
+                                    style="width: 200px"
+                                    alt="NoPhoto"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-floppy-o"></i> Lưu dữ liệu
+                                </button>
+                                <a th:href="@{/Employee}" class="btn btn-default">Quay lại</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

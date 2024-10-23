@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_Layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>product detail title</title>
+</head>
+<body>
+<!-- Product Detail View -->
+<section layout:fragment="content" class="product-detail">
+    <div class="product-images">
+        <img src="product-detail.jpg" alt="Product Detail">
+        <div class="product-thumbnails">
+            <img src="thumb1.jpg" alt="Thumb 1">
+            <img src="thumb2.jpg" alt="Thumb 2">
+            <img src="thumb3.jpg" alt="Thumb 3">
+        </div>
+    </div>
+    <div class="product-info">
+        <h2>Huishö Pijama</h2>
+        <p class="price">$86.00 <span class="old-price">$104.00</span></p>
+        <p class="reviews">32 people are looking at this product</p>
+
+        <div class="color-options">
+            <h4>Color</h4>
+            <div class="colors">
+                <span class="color-swatch" style="background-color: #fff;"></span>
+                <span class="color-swatch" style="background-color: #e60000;"></span>
+                <span class="color-swatch" style="background-color: #00ff00;"></span>
+                <span class="color-swatch" style="background-color: #0000ff;"></span>
+            </div>
+        </div>
+
+        <div class="size-options">
+            <h4>Size</h4>
+            <div class="sizes">
+                <button>S</button>
+                <button>M</button>
+                <button>L</button>
+                <button>XL</button>
+                <button>XXL</button>
+            </div>
+        </div>
+
+        <div class="add-to-cart">
+            <button>Add to Cart</button>
+            <button>Buy Now</button>
+        </div>
+
+        <p class="timer">Hurry up, offer expires in: <span>05 Days 11:23:02</span></p>
+    </div>
+</section>
+</body>
+</html>

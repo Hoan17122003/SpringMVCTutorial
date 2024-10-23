@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{Shared/_Layout}"
+>
+    <head>
+        <title th:text="'Category'">Category</title>
+    </head>
+    <body>
+        <section layout:fragment="content">
+            <h2>Category List</h2>
+            <div class="box box-primary">
+                <div class="box-body">
+                    <!--Search Form-->
+                    <form id="formSearch" th:action="@{/Category}" method="get">
+                        <div class="input-group">
+                            <input
+                                th:name="searchValue"
+                                type="text"
+                                class="form-control"
+                                placeholder="Nhập tên loại hàng cần tìm"
+                                autofocus
+                                th:value="${searchValue}"
+                            />
+
+                            <div class="input-group-btn">
+                                <button class="btn btn-info" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+
+                                <a th:href="@{/Category/Create}" class="btn btn-primary" style="margin-left: 5px">
+                                    <i class="fa fa-plus"></i> Bổ sung
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Hiển thị danh sách các category -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr class="bg-primary">
+                                    <th>Tên loại hàng</th>
+                                    <th>Mô tả</th>
+                                    <th style="width: 80px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Thymeleaf loop -->
+                                <tr th:each="item : ${categories}">
+                                    <td th:text="${item.categoryName}">Tên loại hàng</td>
+                                    <td th:text="${item.description}">Mô tả</td>
+                                    <td class="text-right">
+                                        <a
+                                            th:href="@{/Category/Edit/{id}(id=${item.getCategoryId()})}"
+                                            class="btn btn-xs btn-info"
+                                        >
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <!-- Button trigger modal for delete -->
+                                        <button
+                                            type="button"
+                                            class="btn btn-xs btn-danger delete-btn"
+                                            th:data-id="${item.getCategoryId()}"
+                                            th:data-name="${item.getCategoryName()}"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                        >
+                                            <i class="fa fa-remove"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div
+                class="modal fade"
+                id="deleteModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="deleteModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Bạn có chắc muốn xoá không?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Bạn có chắc chắn muốn xoá loại hàng
+                            <strong id="categoryName"></strong>?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="button" id="confirmDeleteBtn" class="btn btn-primary">Xác nhận xoá</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <div class="text-center">
+                <ul class="pagination">
+                    <li th:each="p : ${#numbers.sequence(1, pageCount)}" th:classappend="${p == page} ? 'active'">
+                        <a th:href="@{/Category(page=${p}, searchValue=${searchValue})}" th:text="${p}">1</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- hiden form  -->
+
+            <!-- JavaScript -->
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    const deleteButtons = document.querySelectorAll(".delete-btn");
+                    const categoryNameElement = document.getElementById("categoryName");
+                    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+                    let selectedCategoryId = null; // Biến lưu lại categoryId cần xóa
+
+                    // Gán sự kiện click cho từng nút xoá
+                    deleteButtons.forEach(function (button) {
+                        button.addEventListener("click", function () {
+                            const categoryId = this.getAttribute("data-id");
+                            const categoryName = this.getAttribute("data-name");
+
+                            // Lưu categoryId để sử dụng khi người dùng xác nhận xoá
+                            selectedCategoryId = categoryId;
+
+                            // Hiển thị tên loại hàng trong modal
+                            categoryNameElement.textContent = categoryName;
+                        });
+                    });
+
+                    // Xử lý khi người dùng nhấn "Xác nhận xoá"
+                    confirmDeleteBtn.addEventListener("click", function () {
+                        if (selectedCategoryId) {
+                            const deleteUrl = `/Category/Delete/${selectedCategoryId}`;
+                            console.log("DeleteURL : ", deleteUrl);
+                            console.log("comfirmDeleteBTN : ", confirmDeleteBtn);
+                            let formHiden = document.createElement("form");
+                            document.body.appendChild(formHiden);
+
+                            formHiden.action = deleteUrl;
+                            formHiden.method = "post";
+                            formHiden.submit(); // Submit form để gửi yêu cầu DELETE
+                        }
+                    });
+                });
+            </script>
+        </section>
+    </body>
+</html>

@@ -1,0 +1,6 @@
+Lê Đức Dũng;1980-10-09;13/57 Trần Phú, TP Huế;05128097385;leducdung@mycompany.com;123456; ;1;admin,employees
+Lê Thị My Na;1995-06-26;24/5 Tam Thai, Huế;07135895079;lethimyna@mycompany.com;123456; ;1;NULL
+Nguyễn Tấn Tú;1995-02-08;54/8 Nguyễn Hữu Cảnh, thành phố Huế;09444655327;nguyentantu@mycompany.com;123456; ;1;NULL
+Lê Thị Mỹ Ngân;1995-04-24;5/2 Trần Thái Tổ;06193705608;lethimyngan@mycompany.com;123456; ;1;NULL
+Nguyễn Văn Quốc Nhật;1994-08-11;6/2/281 Trần Hữu Dực;08256884817;nguyenvanquocnhat@mycompany.com;123456; ;1;NULL
+Khang Hữu Xuân;1995-07-09;85/23 Nguyễn Huệ, Huế;08738122931;khanghuuxuan@mycompany.com;123456; ;1;NULL

@@ -1,0 +1,22 @@
+<!-- Order/Index.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_Layout}">
+<head>
+    <title th:text="'Orders'">Orders</title>
+</head>
+<body>
+
+<!-- Phần content sẽ được thay đổi -->
+<section layout:fragment="content">
+    <h2>Order List</h2>
+    <ul>
+        <li>Order 1</li>
+        <li>Order 2</li>
+        <li>Order 3</li>
+    </ul>
+</section>
+
+</body>
+</html>

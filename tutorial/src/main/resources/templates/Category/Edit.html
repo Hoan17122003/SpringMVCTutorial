@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_Layout}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Create category'">update category</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="box-body">
+        <form class="form-horizontal" th:object="${category}" th:action="@{/Category/Save}" th:method="post"
+        >
+            <input type="hidden" th:field="*{categoryId}" th:value="${category.getCategoryId()}"/>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Tên danh mục : </label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" autofocus th:field="*{categoryName}"
+                           th:value="${category.getCategoryName()}">
+                    <!--                    <div class="alert alert-warning" th:if="${#fields.hasErrors('categoryName')}"-->
+                    <!--                         th:errors="*{categoryName}"></div>-->
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Mô tả:</label>
+                <div class="col-sm-10">
+                        <textarea class="form-control" rows="3" th:text="${category.getDescription()}"
+                                  th:field="*{Description}"></textarea>
+                    <!--                    <div class="alert alert-warning" th:if="${#fields.hasErrors('Description')}"-->
+                    <!--                         th:errors="*{Description}"></div>-->
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Lưu dữ liệu
+                    </button>
+                    <a class="btn btn-warning" th:href="@{/Category}">
+                        Quay lại
+                    </a>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+</body>
+</html>

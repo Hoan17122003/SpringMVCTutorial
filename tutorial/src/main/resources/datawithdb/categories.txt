@@ -1,0 +1,9 @@
+1@May mặc@Thời trang-Quần áo, hàng may mặc, thời trang,...
+2@Mỹ phẩm@Mỹ phẩm
+3@Điện tử@Tivi, điện thoại, máy tính,...
+4@Hàng gia dụng@Trang thiết bị, máy móc gia dụng
+5@Mẹ và em bé@Mẹ và em bé
+6@Xe máy@Xe máy và phụ kiện
+7@Oto@Oto và phụ kiện
+9@Đồ chơi - phụ kiện@Đồ chơi, phụ kiện
+10@Bàn ghế - nội thất@Bàn ghế, trang thiết bị nội thất

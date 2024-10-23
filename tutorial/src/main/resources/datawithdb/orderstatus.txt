@@ -1,0 +1,6 @@
+-2;Đơn hàng bị từ chối
+-1;Đơn hàng đã bị hủy
+1;Đơn hàng vừa gửi/khởi tạo
+2;Đơn hàng đã chấp nhận
+3;Đơn hàng đang được vận chuyển
+4;Đơn hàng đã hoàn tất

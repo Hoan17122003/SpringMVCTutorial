@@ -1,0 +1,22 @@
+<!-- Employee/Index.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_Layout}">
+<head>
+    <title th:text="'Customer'">Customer</title>
+</head>
+<body>
+
+<!-- Phần content sẽ được thay đổi -->
+<section layout:fragment="content">
+    <h2>Employee List</h2>
+    <ul>
+        <li>Employee 1</li>
+        <li>Employee 2</li>
+        <li>Employee 3</li>
+    </ul>
+</section>
+
+</body>
+</html>
