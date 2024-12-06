@@ -1,11 +1,12 @@
 package com.springmvc.tutorial.service.impl;
 
-
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -23,9 +24,12 @@ import com.springmvc.tutorial.service.IStorageService;
 @Service
 public class ImageStorageService implements IStorageService {
 
+    @Value("${uploads.path}")
+    private String uploadPath;
+
     private final Path storageFolder = Paths.get("uploads");
 
-    //constructor
+    // constructor
     public ImageStorageService() {
         try {
             Files.createDirectories(storageFolder);
@@ -35,9 +39,9 @@ public class ImageStorageService implements IStorageService {
     }
 
     private boolean isImageFile(MultipartFile file) {
-        //let install FileNameUtils
+        // let install FileNameUtils
         String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
-        return Arrays.asList(new String[]{"png", "jpg", "jpeg", "bmp"}).contains(fileExtension.trim().toLowerCase());
+        return Arrays.asList(new String[] { "png", "jpg", "jpeg", "bmp" }).contains(fileExtension.trim().toLowerCase());
 
     }
 
@@ -46,7 +50,6 @@ public class ImageStorageService implements IStorageService {
         try {
             if (file.isEmpty()) {
                 throw new RuntimeException("failed to store empty file");
-
             }
             if (!isImageFile(file)) {
                 throw new RuntimeException("you can only upload image file");
@@ -59,7 +62,8 @@ public class ImageStorageService implements IStorageService {
             String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
             String generatedFileName = UUID.randomUUID().toString().replace("-", "");
             generatedFileName = generatedFileName + "." + fileExtension;
-            Path destinationFilePath = this.storageFolder.resolve(Paths.get(generatedFileName)).normalize().toAbsolutePath();
+            Path destinationFilePath = this.storageFolder.resolve(Paths.get(generatedFileName)).normalize()
+                    .toAbsolutePath();
             if (!destinationFilePath.getParent().equals(this.storageFolder.toAbsolutePath())) {
                 throw new RuntimeException("cannot store file outside current directory");
             }
@@ -96,5 +100,20 @@ public class ImageStorageService implements IStorageService {
     @Override
     public void deletedAllFile() {
 
+    }
+
+    @Override
+    public boolean deleteFileByUrl(String fileUrl) {
+        try {
+            if (fileUrl == null) {
+                return false;
+            }
+            Path filePath = Paths.get(this.uploadPath, fileUrl);
+            Files.deleteIfExists(filePath);
+        } catch (Exception e) {
+            System.err.println("File không tồn tại: " + fileUrl);
+            throw new RuntimeException(e);
+        }
+        return true;
     }
 }

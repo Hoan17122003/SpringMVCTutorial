@@ -12,5 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IEmployeeRepository extends JpaRepository<Employee, Integer>, IEmployeeRepositoryCustom {
     // Tìm kiếm Category theo tên có hỗ trợ phân trang
-    Page<Employee> findByfullNameContaining(String searchValue, Pageable pageable);
+    Page<Employee> findByFullNameContaining(String searchValue, Pageable pageable);
+
+    Employee findByEmail(String email);
 }

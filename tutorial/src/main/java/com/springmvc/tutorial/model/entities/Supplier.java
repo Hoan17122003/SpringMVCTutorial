@@ -2,12 +2,17 @@ package com.springmvc.tutorial.model.entities;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "Suppliers")
-public class Supplier {
+@Data
+public class Supplier implements Serializable {
+    private static final long serialVersionUID = 1L; // Thêm serialVersionUID
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,79 +94,79 @@ public class Supplier {
     private List<Product> products;
 
 
-    public int getSupplierID() {
-        return supplierID;
-    }
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public String getContactName() {
-        return contactName;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public Province getPv() {
-        return pv;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
-
-    public void setPv(Province pv) {
-        this.pv = pv;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
+//    public int getSupplierID() {
+//        return supplierID;
+//    }
+//
+//    public String getSupplierName() {
+//        return supplierName;
+//    }
+//
+//    public String getContactName() {
+//        return contactName;
+//    }
+//
+//    public String getProvince() {
+//        return province;
+//    }
+//
+//    public String getAddress() {
+//        return address;
+//    }
+//
+//    public String getPhone() {
+//        return phone;
+//    }
+//
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public String getLogo() {
+//        return logo;
+//    }
+//
+//    public Province getPv() {
+//        return pv;
+//    }
+//
+//    public List<Product> getProducts() {
+//        return products;
+//    }
+//
+//    public void setSupplierName(String supplierName) {
+//        this.supplierName = supplierName;
+//    }
+//
+//    public void setContactName(String contactName) {
+//        this.contactName = contactName;
+//    }
+//
+//    public void setProvince(String province) {
+//        this.province = province;
+//    }
+//
+//    public void setAddress(String address) {
+//        this.address = address;
+//    }
+//
+//    public void setPhone(String phone) {
+//        this.phone = phone;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public void setLogo(String logo) {
+//        this.logo = logo;
+//    }
+//
+//    public void setPv(Province pv) {
+//        this.pv = pv;
+//    }
+//
+//    public void setProducts(List<Product> products) {
+//        this.products = products;
+//    }
 }

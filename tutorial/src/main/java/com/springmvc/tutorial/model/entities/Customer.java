@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.List;
 @Table
 //@Target(value = {METHOD, FIELD})
 //@Retention(value = RUNTIME)
-public class Customer {
+public class Customer implements Serializable {
+
+    private static final Long serialVersionUID = 1L;
 
     @Id
     @Column(

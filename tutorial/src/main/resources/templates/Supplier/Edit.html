@@ -5,20 +5,21 @@
       layout:decorate="~{Shared/_Layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title th:title="${title}">Supplier Edit</title>
 </head>
 <body>
 
-<div class="box box-primary">
+<div layout:fragment="content" class="box box-primary">
     <div class="box-body">
-        <form action="~/Supplier/Save" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{supplier.supplierID}" value="${supplier.getSupplierID()}"/>
-            <input type="hidden" name="@nameof(Model.Logo)" value="@existingPhoto"/>
+        <form th:action="@{/Supplier/Save}" th:method="post" th:object="${supplier}" enctype="multipart/form-data">
+            <input type="hidden" th:field="*{supplierID}" th:value="${supplier.getSupplierID()}"/>
+            <input type="hidden" th:field="*{logo}" th:value="${logo}"/>
             <!-- Hidden field cho ảnh hiện tại -->
 
             <div class="form-group">
                 <label>Tên nhà cung cấp</label>
-                <input type="text" class="form-control" th:field="*{supplierName}" value="${supplier.getSupplierName()}"
+                <input type="text" class="form-control" th:field="*{supplierName}"
+                       th:value="${supplier.getSupplierName()}"
                        autofocus>
             </div>
 
@@ -32,7 +33,7 @@
                 <label>Tỉnh thành</label>
                 <select class="form-control select2" th:field="*{province}">
                     <option value="">-- Chọn Tỉnh/Thành</option>
-                    <option th:each="province : ${@supplierServiceImpl.getAllProvince()}"
+                    <option th:each="province : ${@provincesSerivce.getAllProvince()}"
                             th:text="${province.getProvinceName()}"
                             th:value="${province.getProvinceName()}"></option>
 
@@ -55,19 +56,35 @@
             </div>
 
             <div class="form-group">
-                <label>Logo Supplier</label>
-                <input type="file" class="form-control" name="uploadPhoto"/> <!-- Trường file input -->
-<!--                @if (!string.IsNullOrEmpty(existingPhoto))-->
-                <!--                {-->
-                <!--                <img src="~/assets/images/employees/@existingPhoto" alt="Ảnh đại diện" style="max-width: 100px;"/>-->
-                <!--                }-->
+                <label class="control-label col-sm-2">Logo:</label>
+                <div class="col-sm-10">
+                    <input
+                            type="file"
+                            class="form-control"
+                            name="uploadPhoto"
+                            accept="image/*"
+                            onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])"
+                    />
+                </div>
+            </div>
+            <!-- Logo preview -->
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-sm-10" th:if=${!#strings.isEmpty(supplier.getLogo())}>
+                    <img
+                            id="Photo"
+                            th:src="@{/images/{photo}(photo=${supplier.logo})}"
+                            class="img img-bordered"
+                            style="width: 200px"
+                            alt="NoPhoto"
+                    />
+                </div>
             </div>
 
             <div class="form-group text-right">
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-save"></i> Lưu dữ liệu
                 </button>
-                <a href="~/Supplier" class="btn btn-default">Quay lại</a>
+                <a href="@{/Supplier}" class="btn btn-default">Quay lại</a>
             </div>
         </form>
     </div>

@@ -20,16 +20,14 @@ public class FileUploadController {
     @PostMapping("")
     public ResponseEntity<ResponseObject> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            //save files to a folder => use a service
+            // save files to a folder => use a service
             String generatedFileName = storageService.storeFile(file);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "upload file successfully", generatedFileName)
-            );
+                    new ResponseObject("ok", "upload file successfully", generatedFileName));
 
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", exception.getMessage(), " ")
-            );
+                    new ResponseObject("ok", exception.getMessage(), " "));
         }
     }
 
@@ -37,7 +35,7 @@ public class FileUploadController {
     public ResponseEntity<byte[]> readDetailFile(@PathVariable String fileName) {
         try {
             byte[] bytes = storageService.readFileContent(fileName);
-            //files/0aae96bef383412cb29467a9833d8a1e.jpg
+            // files/0aae96bef383412cb29467a9833d8a1e.jpg
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.IMAGE_GIF)
@@ -47,4 +45,3 @@ public class FileUploadController {
         }
     }
 }
-

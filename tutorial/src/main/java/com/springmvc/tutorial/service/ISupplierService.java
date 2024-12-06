@@ -13,9 +13,15 @@ public interface ISupplierService {
 
     public Optional<Province> getAllProvince();
 
-    public Optional<Supplier> getDataPage(int PageNumber, int PageSize, String searchValue);
+    public List<Supplier> getDataPage(int PageNumber, int PageSize, String searchValue);
 
     public void saveSupplier(Supplier supplier);
 
-    public Long countSupplier();
+    public Long countSupplier(String searchValue);
+
+    public Supplier findSupplierById(int id);
+
+    public void updateSupplier(Supplier supplier, int supplierId);
+
+    public void deleteSupplierById(int supplierId);
 }

@@ -19,4 +19,6 @@ public interface IEmployeeService {
     int update(Employee employee, int id);
 
     void save(Employee employee);
+
+    boolean deleteEmployeeById(int employeeID);
 }

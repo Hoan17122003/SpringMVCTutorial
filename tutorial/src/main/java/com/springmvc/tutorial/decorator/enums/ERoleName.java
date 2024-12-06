@@ -1,4 +1,4 @@
-package com.springmvc.tutorial.enums;
+package com.springmvc.tutorial.decorator.enums;
 
 public enum ERoleName {
     ADMIN,

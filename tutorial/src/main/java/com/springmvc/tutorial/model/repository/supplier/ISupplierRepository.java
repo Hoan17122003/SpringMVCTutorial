@@ -6,6 +6,8 @@ import com.springmvc.tutorial.model.entities.Supplier;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +27,9 @@ public interface ISupplierRepository extends JpaRepository<Supplier, Integer>, I
     public Optional<Supplier> getDataPagnationPage(@Param("PageNumber") int pageNumber,
                                                    @Param("PageSize") int pageSize,
                                                    @Param("SearchValue") String searchValue);
+
+    public Page<Supplier> findBySupplierNameContaining(Pageable pageable, String searchValue);
+
+    @Query(nativeQuery = true, value = "select COUNT(supplierID) from suppliers where SupplierName like %:searchValue%")
+    Long countSupplilerCondition(@Param("searchValue") String searchValue);
 }

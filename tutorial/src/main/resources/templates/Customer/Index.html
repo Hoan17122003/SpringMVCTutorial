@@ -1,22 +1,336 @@
-<!-- Employee/Index.html -->
+<!--&lt;!&ndash; Employee/Index.html &ndash;&gt;-->
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org"-->
+<!--      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"-->
+<!--      layout:decorate="~{Shared/_Layout}">-->
+<!--<head>-->
+<!--    <title th:text="'Customer'">Customer</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash; Phần content sẽ được thay đổi &ndash;&gt;-->
+<!--<section layout:fragment="content">-->
+
+<!--    <div class="box box-primary">-->
+<!--        <div class="box-body">-->
+<!--            &lt;!&ndash; Form nhập đầu vào tìm kiếm &ndash;&gt;-->
+<!--            <form id="formSearch" th:action="@{/Customer}" th:method="get">-->
+<!--                <div class="input-group">-->
+<!--                    <input th:name="searchValue" type="text" class="form-control"-->
+<!--                           placeholder="Nhập tên nhân viên cần tìm" autofocus th:value="${searchValue}">-->
+<!--                    <div class="input-group-btn">-->
+<!--                        <button class="btn btn-info" type="submit">-->
+<!--                            <i class="glyphicon glyphicon-search"></i>-->
+<!--                        </button>-->
+<!--                        <a th:href="@{/Customer/Create}" class="btn btn-primary" style="margin-left:5px">-->
+<!--                            <i class="fa fa-plus"></i> Bổ sung-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+
+<!--            &lt;!&ndash; Hiển thị kết quả tìm kiếm &ndash;&gt;-->
+<!--            <div th:if="${customerSize > 0}">-->
+
+<!--                Có <strong th:text="${rowCount}"></strong> nhân viên trong tổng số-->
+<!--                <strong th:text="${pageCount}"></strong> trang-->
+<!--                </p>-->
+
+<!--                <div class="table-responsive">-->
+<!--                    <table class="table table-bordered table-hover table-striped">-->
+<!--                        <thead>-->
+<!--                        <tr class="bg-primary">-->
+<!--                            <th>Tên khách hàng</th>-->
+<!--                            <th>Tên giao dịch</th>-->
+<!--                            <th>Diện thoại</th>-->
+<!--                            <th>Email</th>-->
+<!--                            <th>Địa chỉ</th>-->
+<!--                            <th>Tỉnh thành</th>-->
+<!--                            <th>Bị Khoá ?</th>-->
+<!--                            <th style="width: 80px"></th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        &lt;!&ndash; Thymeleaf loop &ndash;&gt;-->
+<!--                        <tr th:each="item : ${customers}">-->
+<!--                            <td th:text="${item.customerName}">Tên khách hàng</td>-->
+<!--                            <td th:text="${item.contactName}">Tên giao dịch</td>-->
+<!--                            <td th:text="${item.phone}">Điện thoại</td>-->
+<!--                            <td th:text="${item.email}">Emaiil</td>-->
+<!--                            <td th:text="${item.address}">Địa chỉ</td>-->
+<!--                            <td th:text="${item.Province}">Tỉnh thành</td>-->
+<!--                            <td th:text="${item.isLocked}">Bị khóa?</td>-->
+<!--                            <td class="text-right">-->
+<!--                                <a-->
+<!--                                        th:href="@{/Customer/Edit/{id}(id=${item.getCustomerID()})}"-->
+<!--                                        class="btn btn-xs btn-info"-->
+<!--                                >-->
+<!--                                    <i class="fa fa-edit"></i>-->
+<!--                                </a>-->
+<!--                                &lt;!&ndash; Button trigger modal for delete &ndash;&gt;-->
+<!--                                <button-->
+<!--                                        type="button"-->
+<!--                                        class="btn btn-xs btn-danger delete-btn"-->
+<!--                                        th:data-id="${item.customerID}"-->
+<!--                                        th:data-name="${item.customerName}"-->
+<!--                                        data-toggle="modal"-->
+<!--                                        data-target="#deleteModal"-->
+<!--                                >-->
+<!--                                    <i class="fa fa-remove"></i>-->
+<!--                                </button>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div th:unless="${customerSize > 0}"> không có dữ liẹu</div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; Modal &ndash;&gt;-->
+<!--        <div-->
+<!--                class="modal fade"-->
+<!--                id="deleteModal"-->
+<!--                tabindex="-1"-->
+<!--                role="dialog"-->
+<!--                aria-labelledby="deleteModalLabel"-->
+<!--                aria-hidden="true"-->
+<!--        >-->
+<!--            <div class="modal-dialog" role="document">-->
+<!--                <div class="modal-content">-->
+<!--                    <div class="modal-header">-->
+<!--                        <h5 class="modal-title" id="deleteModalLabel">Bạn có chắc muốn xoá không?</h5>-->
+<!--                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                            <span aria-hidden="true">&times;</span>-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div class="modal-body">-->
+<!--                        Bạn có chắc chắn muốn xoá Khách hàng-->
+<!--                        <strong id="CustomerName"></strong>?-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>-->
+<!--                        <button type="button" id="confirmDeleteBtn" class="btn btn-primary">Xác nhận xoá</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; Phân trang &ndash;&gt;-->
+<!--        <div class="text-center">-->
+<!--            <ul class="pagination">-->
+<!--                <li th:each="p : ${#numbers.sequence(1, pageCount)}" th:classappend="${p == page} ? 'active'">-->
+<!--                    <a th:href="@{/Customer(page=${p}, searchValue=${searchValue})}" th:text="${p}">1</a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--</section>-->
+<!--&lt;!&ndash; JavaScript &ndash;&gt;-->
+<!--<script th:type="text/javascript">-->
+<!--    document.addEventListener("DOMContentLoaded", function () {-->
+<!--        const deleteButtons = document.querySelectorAll(".delete-btn");-->
+<!--        const customerNameElement = document.getElementById("CustomerName");-->
+<!--         console.log(`customerName : ${customerNameElement}` );-->
+<!--        -->
+<!--        const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");-->
+<!--        let selectedCustomerId = null; // Biến lưu lại categoryId cần xóa-->
+
+<!--        // Gán sự kiện click cho từng nút xoá-->
+<!--        deleteButtons.forEach(function (button) {-->
+<!--            button.addEventListener("click", function () {-->
+<!--                const customerId = this.getAttribute("data-id");-->
+<!--                const customerName = this.getAttribute("data-name");-->
+
+<!--                // Lưu categoryId để sử dụng khi người dùng xác nhận xoá-->
+<!--                selectedCustomerId = customerId;-->
+
+<!--                // Hiển thị tên loại hàng trong modal-->
+<!--                customerNameElement.textContent = customerName;-->
+<!--            });-->
+<!--        });-->
+
+<!--        // Xử lý khi người dùng nhấn "Xác nhận xoá"-->
+<!--        confirmDeleteBtn.addEventListener("click", function () {-->
+<!--                console.log(`customerId : ${customerId}`)-->
+<!--                console.log(`customerName : ${customerName} - customerID : ${customerId}`)-->
+<!--            if (selectedCustomerId) {-->
+<!--                const deleteUrl = `/Customer/Delete/${selectedCustomerId}`;-->
+<!--                console.log("DeleteURL : ", deleteUrl);-->
+<!--                console.log("comfirmDeleteBTN : ", confirmDeleteBtn);-->
+<!--                let formHiden = document.createElement("form");-->
+<!--                document.body.appendChild(formHiden);-->
+
+<!--                formHiden.action = deleteUrl;-->
+<!--                formHiden.method = "post";-->
+<!--                formHiden.submit(); // Submit form để gửi yêu cầu DELETE-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Shared/_Layout}">
-<head>
-    <title th:text="'Customer'">Customer</title>
-</head>
-<body>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{Shared/_Layout}"
+>
+    <head>
+        <title th:text="'Customer'">Customer</title>
+    </head>
+    <body>
+        <section layout:fragment="content">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <form id="formSearch" th:action="@{/Customer}" th:method="get">
+                        <div class="input-group">
+                            <input
+                                th:name="searchValue"
+                                type="text"
+                                class="form-control"
+                                placeholder="Nhập tên nhân viên cần tìm"
+                                autofocus
+                                th:value="${searchValue}"
+                            />
+                            <div class="input-group-btn">
+                                <button class="btn btn-info" type="submit">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                                <a th:href="@{/Customer/Create}" class="btn btn-primary" style="margin-left: 5px">
+                                    <i class="fa fa-plus"></i> Bổ sung
+                                </a>
+                            </div>
+                        </div>
+                    </form>
 
-<!-- Phần content sẽ được thay đổi -->
-<section layout:fragment="content">
-    <h2>Employee List</h2>
-    <ul>
-        <li>Employee 1</li>
-        <li>Employee 2</li>
-        <li>Employee 3</li>
-    </ul>
-</section>
+                    <div th:if="${customerSize > 0}">
+                        Có <strong th:text="${rowCount}"></strong> nhân viên trong tổng số
+                        <strong th:text="${pageCount}"></strong> trang
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr class="bg-primary">
+                                        <th>Tên khách hàng</th>
+                                        <th>Tên giao dịch</th>
+                                        <th>Diện thoại</th>
+                                        <th>Email</th>
+                                        <th>Địa chỉ</th>
+                                        <th>Tỉnh thành</th>
+                                        <th>Bị Khoá ?</th>
+                                        <th style="width: 80px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${customers}">
+                                        <td th:text="${item.customerName}">Tên khách hàng</td>
+                                        <td th:text="${item.contactName}">Tên giao dịch</td>
+                                        <td th:text="${item.phone}">Điện thoại</td>
+                                        <td th:text="${item.email}">Email</td>
+                                        <td th:text="${item.address}">Địa chỉ</td>
+                                        <td th:text="${item.Province}">Tỉnh thành</td>
+                                        <td th:text="${item.isLocked}">Bị khóa?</td>
+                                        <td class="text-right">
+                                            <a
+                                                th:href="@{/Customer/Edit/{id}(id=${item.customerID})}"
+                                                class="btn btn-xs btn-info"
+                                            >
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <button
+                                                type="button"
+                                                class="btn btn-xs btn-danger delete-btn"
+                                                th:data-id="${item.customerID}"
+                                                th:data-name="${item.customerName}"
+                                                data-toggle="modal"
+                                                data-target="#deleteModal"
+                                            >
+                                                <i class="fa fa-remove"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div th:unless="${customerSize > 0}">Không có dữ liệu</div>
+                </div>
 
-</body>
+                <!-- Modal -->
+                <div
+                    class="modal fade"
+                    id="deleteModal"
+                    tabindex="-1"
+                    role="dialog"
+                    aria-labelledby="deleteModalLabel"
+                    aria-hidden="true"
+                >
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Bạn có chắc muốn xoá không?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Bạn có chắc chắn muốn xoá Khách hàng
+                                <strong id="customerName"></strong>?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="button" id="confirmDeleteBtn" class="btn btn-primary">
+                                    Xác nhận xoá
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="text-center">
+                    <ul class="pagination">
+                        <li th:each="p : ${#numbers.sequence(1, pageCount)}" th:classappend="${p == page} ? 'active'">
+                            <a th:href="@{/Customer(page=${p}, searchValue=${searchValue})}" th:text="${p}">1</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                const deleteButtons = document.querySelectorAll(".delete-btn");
+                const customerNameElement = document.getElementById("customerName");
+                const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+                let selectedCustomerId = null; // Biến lưu lại customerId cần xóa
+
+                // Gán sự kiện click cho từng nút xoá
+                deleteButtons.forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        selectedCustomerId = this.getAttribute("data-id");
+                        const customerName = this.getAttribute("data-name");
+
+                        // Hiển thị tên khách hàng trong modal
+                        customerNameElement.textContent = customerName;
+                    });
+                });
+                console.log("hehehe");
+                // Xử lý khi người dùng nhấn "Xác nhận xoá"
+                confirmDeleteBtn.addEventListener("click", function (e) {
+                    console.log(`button click : ${e.target.value}`);
+                    if (selectedCustomerId) {
+                        // Tạo form ẩn để submit yêu cầu xóa
+                        const formHidden = document.createElement("form");
+                        formHidden.style.display = "none";
+                        formHidden.method = "post";
+                        formHidden.action = `/Customer/Delete/${selectedCustomerId}`;
+
+                        document.body.appendChild(formHidden);
+                        formHidden.submit(); // Submit form để gửi yêu cầu DELETE
+                    }
+                });
+            });
+        </script>
+    </body>
 </html>

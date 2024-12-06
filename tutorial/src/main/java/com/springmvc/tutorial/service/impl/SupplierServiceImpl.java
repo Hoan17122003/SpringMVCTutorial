@@ -7,6 +7,9 @@ import com.springmvc.tutorial.model.repository.supplier.ISupplierRepository;
 import com.springmvc.tutorial.model.repository.supplier.ISupplierRepositoryCustom;
 import com.springmvc.tutorial.service.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +36,10 @@ public class SupplierServiceImpl implements ISupplierService {
     }
 
     @Override
-    public Optional<Supplier> getDataPage(int PageNumber, int PageSize, String searchValue) {
-        return this.repository.getDataPagnationPage(PageNumber, PageSize, searchValue);
+    public List<Supplier> getDataPage(int PageNumber, int PageSize, String searchValue) {
+        Pageable pageable = PageRequest.of(PageNumber - 1, PageSize);
+        var customer = this.repository.findBySupplierNameContaining(pageable, searchValue);
+        return customer.stream().toList();
     }
 
     @Override
@@ -43,7 +48,25 @@ public class SupplierServiceImpl implements ISupplierService {
     }
 
     @Override
-    public Long countSupplier() {
-        return this.repository.count();
+    public Long countSupplier(String searchValue) {
+        return this.repository.countSupplilerCondition(searchValue);
+    }
+
+    @Override
+    public Supplier findSupplierById(int id) {
+        return this.repository.findById(id).stream().findFirst().orElse(null);
+    }
+
+    @Override
+    public void updateSupplier(Supplier supplier, int supplierId) {
+        this.repository.findById(supplierId).ifPresent(element -> {
+            element = supplier;
+            this.repository.save(element);
+        });
+    }
+
+    @Override
+    public void deleteSupplierById(int supplierId) {
+        this.repository.deleteById(supplierId);
     }
 }

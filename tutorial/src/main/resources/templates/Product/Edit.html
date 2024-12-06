@@ -1,247 +1,445 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{Shared/_Layout}">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${title}">create product title</title>
-</head>
-<body>
-<div layout:fragment="content">
-    <div class="box box-primary">
-
-        <div class="box-header with-border ">
-            <h3 class="box-title">Thông tin mặt hàng</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title=""
-                        data-original-title="Collapse">
-                    <i class="fa fa-minus"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="box-body">
-            <form class="form-horizontal" th:object="${product}" th:action="@{/Product/Save}" method="post"
-                  enctype="multipart/form-data">
-                <input type="hidden" th:field="*{ProductID}" th:value="${product.getProductID()}"/>
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Tên mặt hàng:</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" autofocus th:field="*{productName}"
-                               th:value="${product.getProductName()}">
-                        <div class="alert alert-warning" th:if="${#fields.hasErrors('productName')}"
-                             th:errors="*{productName}"></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Mô tả:</label>
-                    <div class="col-sm-10">
-                        <textarea class="form-control" rows="3" th:text="${product.getProductDescription()}"
-                                  th:field="*{productDescription}"></textarea>
-                        <div class="alert alert-warning" th:if="${#fields.hasErrors('productDescription')}"
-                             th:errors="*{productDescription}"></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Loại hàng:</label>
-                    <div class="col-sm-10">
-                        <select class="form-control" th:field="*{categoryID}">
-                            <option value="0">-- Loại hàng --</option>
-                            <option th:each="category : ${@categoryServiceImpl.getAllCategory()}"
-                                    th:value="${category.getCategoryId()}"
-                                    th:text="${category.getCategoryName()}"></option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Nhà cung cấp:</label>
-                    <div class="col-sm-10">
-                        <select class="form-control" th:fied="*{supplierID}">
-                            <option value="0">-- Nhà cung cấp --</option>
-                            <option th:each="supplier : ${@supplierServiceImpl.getAllSupplier()}"
-                                    th:text="${supplier.getSupplierName()}"
-                                    th:value="${supplier.getSupplierID()}"></option>
-                            <div class="alert alert-warning" th:if="${#fields.hasErrors('supplierID')}"
-                                 th:errors="*{supplierID}"></div>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Đơn vị tính:</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" th:field="*{unit}"
-                               th:value="${product.getUnit()}">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Giá hàng:</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" th:field="*{price}"
-                               th:value="${product.getPrice()}">
-                    </div>
-                </div>
-
-                <!--                <div class="form-group">-->
-                <!--                    <div class="col-lg-offset-2 col-sm-10">-->
-                <!--                        <div class="checkbox">-->
-                <!--                            <label><input type="checkbox" value="true" checked name="@nameof(Model.IsSelling)">Hiện đang-->
-                <!--                                được bán</label>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-
-                <div class="form-group">
-                    <label class="control-label col-sm-2">Ảnh minh họa:</label>
-                    <div class="col-sm-10">
-                        <input type="file" class="form-control" th:name="uploadFile" accept="image/*"
-                               onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-lg-offset-2 col-sm-10">
-                        <input type="hidden" name="@nameof(Model.Photo)" value="@Model.Photo"/>
-                        <img id="Photo"
-                             src="@{/images/product/${product.getPhoto()}"
-                             class="img img-bordered" style="width:200px"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save"></i> Lưu dữ liệu
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{Shared/_Layout}"
+>
+    <head>
+        <meta charset="UTF-8" />
+        <title th:text="${title}">create product title</title>
+    </head>
+    <body>
+        <section layout:fragment="content">
+            <button
+                th:if="${message != null}"
+                type="button"
+                th:data-message="${message}"
+                class="close message"
+                data-dismiss="alert"
+                aria-label="Close"
+            ></button>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Thông tin mặt hàng</h3>
+                    <div class="box-tools pull-right">
+                        <button
+                            type="button"
+                            class="btn btn-box-tool"
+                            data-widget="collapse"
+                            data-toggle="tooltip"
+                            title=""
+                            data-original-title="Collapse"
+                        >
+                            <i class="fa fa-minus"></i>
                         </button>
-                        <a class="btn btn-warning" href="~/Product">
-                            Quay lại
-                        </a>
                     </div>
                 </div>
-            </form>
 
-        </div>
+                <div class="box-body">
+                    <form
+                        class="form-horizontal"
+                        th:object="${product}"
+                        th:action="@{/Product/Save}"
+                        method="post"
+                        enctype="multipart/form-data"
+                    >
+                        <input
+                            id="ProductID"
+                            type="hidden"
+                            th:data-productId="${product.getProductID()}"
+                            th:field="*{ProductID}"
+                            th:value="${product.getProductID()}"
+                        />
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Tên mặt hàng:</label>
+                            <div class="col-sm-10">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    autofocus
+                                    th:field="*{productName}"
+                                    th:value="${product.getProductName()}"
+                                    id="productName"
+                                    placeholder="nhập tên mặt hàng"
+                                />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('productName')}"
+                                    th:errors="*{productName}"
+                                ></div>
+                            </div>
+                        </div>
 
-    </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Mô tả:</label>
+                            <div class="col-sm-10">
+                                <textarea
+                                    class="form-control"
+                                    rows="3"
+                                    th:text="${product.getProductDescription()}"
+                                    th:field="*{productDescription}"
+                                    id="productDescription"
+                                    placeholder="hãy nhập mô tả sản phẩm"
+                                ></textarea>
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('productDescription')}"
+                                    th:errors="*{productDescription}"
+                                ></div>
+                            </div>
+                        </div>
 
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Loại hàng:</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" th:field="*{categoryID}">
+                                    <option th:value="0">-- Loại hàng --</option>
+                                    <option
+                                        th:each="category : ${@categoryServiceImpl.getAllCategory()}"
+                                        th:text="${category.categoryName}"
+                                        th:value="${category.categoryId}"
+                                    ></option>
+                                </select>
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('categoryID')}"
+                                    th:errors="*{categoryID}"
+                                ></div>
+                            </div>
+                        </div>
 
-    <!--    <div class="box box-info">-->
-    <!--        <div class="box-header with-border ">-->
-    <!--            <h3 class="box-title">Thư viện ảnh</h3>-->
-    <!--            <div class="box-tools pull-right">-->
-    <!--                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title=""-->
-    <!--                        data-original-title="Collapse">-->
-    <!--                    <i class="fa fa-minus"></i>-->
-    <!--                </button>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--        <div class="box-body">-->
-    <!--            <table class="table table-bordered table-hover table-striped">-->
-    <!--                <thead>-->
-    <!--                <tr class="bg-gray">-->
-    <!--                    <th style="width: 30px">Ảnh</th>-->
-    <!--                    <th>Mô tả/tiêu đề</th>-->
-    <!--                    <th>Thứ tự hiển thị</th>-->
-    <!--                    <th>Ẩn ảnh</th>-->
-    <!--                    <th class="text-right">-->
-    <!--                        <a class="btn btn-xs btn-primary" href="~/Product/Photo/@Model.ProductID?method=add">-->
-    <!--                            <i class="fa fa-plus"></i>-->
-    <!--                        </a>-->
-    <!--                    </th>-->
-    <!--                </tr>-->
-    <!--                </thead>-->
-    <!--                <tbody>-->
-    <!--                @foreach (var photo in ProductDataService.ListPhotos(Model.ProductID))-->
-    <!--                {-->
-    <!--                <tr>-->
-    <!--                    <td style="vertical-align:middle">-->
-    <!--                        <img src="@Url.Content($" ~/assets/images/products/{(string.IsNullOrWhiteSpace(photo.Photo) ?-->
-    <!--                        "nophoto.png" : photo.Photo)}")"-->
-    <!--                        style="width:100px" />-->
-    <!--                    </td>-->
-    <!--                    <td style="vertical-align:middle;">-->
-    <!--                        @photo.Description-->
-    <!--                    </td>-->
-    <!--                    <td style="vertical-align:middle;">@photo.DisplayOrder</td>-->
-    <!--                    <td style="vertical-align:middle;"></td>-->
-    <!--                    <td style="vertical-align:middle; text-align:right">-->
-    <!--                        <a class="btn btn-xs btn-primary"-->
-    <!--                           href="~/Product/Photo/@photo.ProductID?method=edit&photoId=@photo.PhotoID">-->
-    <!--                            <i class="fa fa-edit"></i>-->
-    <!--                        </a>-->
-    <!--                        <a class="btn btn-xs btn-danger"-->
-    <!--                           href="~/Product/Photo/@photo.ProductID?method=delete&photoId=@photo.PhotoID"-->
-    <!--                           onclick="return confirm('Xóa ảnh của mặt hàng hay không?')">-->
-    <!--                            <i class="fa fa-remove"></i>-->
-    <!--                        </a>-->
-    <!--                    </td>-->
-    <!--                </tr>-->
-    <!--                }-->
-    <!--                </tbody>-->
-    <!--            </table>-->
-    <!--        </div>-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Nhà cung cấp:</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" th:field="*{supplierID}">
+                                    <option th:value="0">-- Nhà cung cấp --</option>
+                                    <option
+                                        th:each="supplier : ${@supplierServiceImpl.getAllSupplier()}"
+                                        th:text="${supplier.supplierName}"
+                                        th:value="${supplier.supplierID}"
+                                    ></option>
+                                </select>
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('supplierID')}"
+                                    th:errors="*{supplierID}"
+                                ></div>
+                            </div>
+                        </div>
 
-    <!--    </div>-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Đơn vị tính:</label>
+                            <div class="col-sm-10">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    th:field="*{unit}"
+                                    th:value="${product.getUnit()}"
+                                />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('unit')}"
+                                    th:errors="*{unit}"
+                                ></div>
+                            </div>
+                        </div>
 
-    <!--    <div class="box box-info">-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Giá hàng:</label>
+                            <div class="col-sm-10">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    th:field="*{price}"
+                                    th:value="${product.getPrice()}"
+                                />
+                                <div
+                                    class="alert alert-warning"
+                                    th:if="${#fields.hasErrors('price')}"
+                                    th:errors="*{price}"
+                                ></div>
+                            </div>
+                        </div>
 
-    <!--        <div class="box-header with-border ">-->
-    <!--            <h3 class="box-title">Thuộc tính của mặt hàng</h3>-->
-    <!--            <div class="box-tools pull-right">-->
-    <!--                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title=""-->
-    <!--                        data-original-title="Collapse">-->
-    <!--                    <i class="fa fa-minus"></i>-->
-    <!--                </button>-->
-    <!--            </div>-->
-    <!--        </div>-->
+                        <!--                <div class="form-group">-->
+                        <!--                    <div class="col-lg-offset-2 col-sm-10">-->
+                        <!--                        <div class="checkbox">-->
+                        <!--                            <label><input type="checkbox" value="true" checked name="@nameof(Model.IsSelling)">Hiện đang-->
+                        <!--                                được bán</label>-->
+                        <!--                        </div>-->
+                        <!--                    </div>-->
+                        <!--                </div>-->
 
-    <!--        <div class="box-body">-->
-    <!--            <table class="table table-bordered table-hover table-striped">-->
-    <!--                <thead>-->
-    <!--                <tr class="bg-gray">-->
-    <!--                    <th>Tên thuộc tính</th>-->
-    <!--                    <th>Giá trị thuộc tính</th>-->
-    <!--                    <th>Thứ tự hiển thị</th>-->
-    <!--                    <th class="text-right">-->
-    <!--                        <a class="btn btn-xs btn-primary" href="~/Product/Attribute/@Model.ProductID?method=add">-->
-    <!--                            <i class="fa fa-plus"></i>-->
-    <!--                        </a>-->
-    <!--                    </th>-->
-    <!--                </tr>-->
-    <!--                </thead>-->
-    <!--                <tbody>-->
-    <!--                @foreach (var attr in ProductDataService.ListAttributes(Model.ProductID))-->
-    <!--                {-->
-    <!--                <tr>-->
-    <!--                    <td style="vertical-align:middle">@attr.AttributeValue</td>-->
-    <!--                    <td style="vertical-align:middle;">@attr.AttributeName</td>-->
-    <!--                    <td style="vertical-align:middle;">@attr.DisplayOrder</td>-->
-    <!--                    <td style="vertical-align:middle; text-align:right">-->
-    <!--                        <a class="btn btn-xs btn-primary"-->
-    <!--                           href="~/Product/Attribute/@attr.ProductID?method=edit&attributeId=@attr.AttributeID">-->
-    <!--                            <i class="fa fa-edit"></i>-->
-    <!--                        </a>-->
-    <!--                        <a class="btn btn-xs btn-danger"-->
-    <!--                           href="~/Product/Attribute/@attr.ProductID?method=delete&attributeId=@attr.AttributeID"-->
-    <!--                           onclick="return confirm('Xóa thuộc tính này của mặt hàng?')">-->
-    <!--                            <i class="fa fa-remove"></i>-->
-    <!--                        </a>-->
-    <!--                    </td>-->
-    <!--                </tr>-->
-    <!--                }-->
-    <!--                </tbody>-->
-    <!--            </table>-->
-    <!--        </div>-->
-    <!--        <div class="box-footer text-center">-->
-    <!--        </div>-->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Ảnh minh họa:</label>
+                            <div class="col-sm-10">
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    th:name="uploadFile"
+                                    accept="image/*"
+                                    onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])"
+                                />
+                            </div>
+                        </div>
 
-    <!--    </div>-->
-</div>
-</body>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-sm-10">
+                                <input type="hidden" th:field="*{Photo}" th:value="${product.getPhoto()}" />
+                                <img
+                                    th:if="${#strings.isEmpty(product.Photo) || product.Photo == null}"
+                                    th:src="@{/images/nophoto.png}"
+                                    style="width: 200px"
+                                />
+                                <img
+                                    th:unless="${#strings.isEmpty(product.Photo)}"
+                                    id="Photo"
+                                    th:src="@{/uploads/{photo}(photo=${product.Photo})}"
+                                    class="img img-bordered"
+                                    style="width: 200px"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save"></i> Lưu dữ liệu
+                                </button>
+                                <a class="btn btn-warning" th:href="@{/Product}"> Quay lại </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Thư viện ảnh</h3>
+                    <div class="box-tools pull-right">
+                        <button
+                            type="button"
+                            class="btn btn-box-tool"
+                            data-widget="collapse"
+                            data-toggle="tooltip"
+                            title=""
+                            data-original-title="Collapse"
+                        >
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <tr class="bg-gray">
+                                <th style="width: 30px">Ảnh</th>
+                                <th>Mô tả/tiêu đề</th>
+                                <th>Thứ tự hiển thị</th>
+                                <th>Ẩn ảnh</th>
+                                <th class="text-right">
+                                    <a
+                                        class="btn btn-xs btn-primary"
+                                        th:href="@{/Product/Photo/{productId}(productId=${product.ProductID},method='add')}"
+                                    >
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="productPhoto: ${productPhotos}">
+                                <td style="vertical-align: middle">
+                                    <!-- th:if="${productPhoto.photo != null && #strings.isEmpty(productPhoto.photo)}" -->
+                                    <img
+                                        th:src="@{/uploads/{photo}(photo=${productPhoto.photo})}"
+                                        style="width: 100px"
+                                    />
+                                    <!-- <img
+                                        th:unless="${productPhoto.photo != null && #strings.isEmpty(productPhoto.photo)}"
+                                        th:src="@{/images/nophoto.png}"
+                                        style="width: 100px"
+                                    /> -->
+                                </td>
+                                <td th:text="${productPhoto.description}" style="vertical-align: middle"></td>
+                                <td th:text="${productPhoto.DisplayOrder}" style="vertical-align: middle"></td>
+                                <td style="vertical-align: middle"></td>
+                                <td style="vertical-align: middle; text-align: right">
+                                    <a
+                                        class="btn btn-xs btn-primary"
+                                        th:href="@{/Product/Photo/{productId}(productId = ${product.ProductID},method=edit,photoId=${productPhoto.photoId})}"
+                                    >
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <button
+                                        type="button"
+                                        class="btn btn-xs btn-danger delete-btn"
+                                        th:data-id="${productPhoto.photoId}"
+                                        data-name="ảnh này"
+                                        data-description="Photo"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal"
+                                    >
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Thuộc tính của mặt hàng</h3>
+                    <div class="box-tools pull-right">
+                        <button
+                            type="button"
+                            class="btn btn-box-tool"
+                            data-widget="collapse"
+                            data-toggle="tooltip"
+                            title=""
+                            data-original-title="Collapse"
+                        >
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <tr class="bg-gray">
+                                <th>Tên thuộc tính</th>
+                                <th>Giá trị thuộc tính</th>
+                                <th>Thứ tự hiển thị</th>
+                                <th class="text-right">
+                                    <a
+                                        class="btn btn-xs btn-primary"
+                                        th:href="@{/Product/Attribute/{productId}(productId=${product.ProductID},method=add)}"
+                                    >
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="productAttribute : ${productAttributes}">
+                                <td
+                                    style="vertical-align: middle"
+                                    th:text="${productAttribute.getAttributeValue()}"
+                                ></td>
+                                <td
+                                    style="vertical-align: middle"
+                                    th:text="${productAttribute.getAttributeName()}"
+                                ></td>
+                                <td style="vertical-align: middle" th:text="${productAttribute.getDisplayOrder()}"></td>
+                                <td style="vertical-align: middle; text-align: right">
+                                    <a
+                                        class="btn btn-xs btn-primary"
+                                        th:href="@{/Product/Attribute/{productId}(productId=${product.ProductID},method=edit,attributeId=${productAttribute.getAttributeID()})}"
+                                    >
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <button
+                                        type="button"
+                                        class="btn btn-xs btn-danger delete-btn"
+                                        th:data-id="${productAttribute.attributeID}"
+                                        data-name="thuộc tính"
+                                        data-description="Attribute"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal"
+                                    >
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-footer text-center"></div>
+            </div>
+
+            <!-- Modal -->
+            <div
+                class="modal fade"
+                id="deleteModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="deleteModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Bạn có chắc muốn xoá không?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Bạn có chắc chắn muốn xoá
+                            <strong id="productName"></strong> này không ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                            <button type="button" id="confirmDeleteBtn" class="btn btn-primary">Xác nhận xoá</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- JavaScript -->
+            <script type="text/javascript">
+                document.addEventListener("DOMContentLoaded", function () {
+                    const messageElement = document.querySelector(".message");
+                    if (messageElement && messageElement != null) {
+                        const message = messageElement.getAttribute("data-message");
+                        console.log(`message : ${message}`);
+                        alert(message);
+                    }
+                    const deleteButtons = document.querySelectorAll(".delete-btn");
+                    const productNameElement = document.getElementById("productName");
+                    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+                    let selectedProductID = null; // Biến lưu lại productID cần xóa
+
+                    let type;
+                    // Gán sự kiện click cho từng nút xoá
+                    let name;
+                    deleteButtons.forEach(function (button) {
+                        button.addEventListener("click", function () {
+                            const ProductID = this.getAttribute("data-id");
+                            const productName = this.getAttribute("data-name");
+                            name = productName;
+                            type = this.getAttribute("data-description");
+
+                            // Lưu categoryId để sử dụng khi người dùng xác nhận xoá
+                            selectedProductID = ProductID;
+
+                            // Hiển thị tên loại hàng trong modal
+                            productNameElement.textContent = productName;
+                        });
+                    });
+
+                    // Xử lý khi người dùng nhấn "Xác nhận xoá"
+                    confirmDeleteBtn.addEventListener("click", function () {
+                        console.log(`data-name : ${name} - data-id : ${selectedProductID}`);
+                        if (selectedProductID) {
+                            const productID = document.querySelector("#ProductID").getAttribute("data-productId");
+
+                            const deleteUrl = `/Product/${type}/${productID}?method=delete&${type.toLowerCase()}Id=${selectedProductID}`;
+                            console.log("DeleteURL : ", deleteUrl);
+                            console.log("comfirmDeleteBTN : ", confirmDeleteBtn);
+                            let formHiden = document.createElement("form");
+                            document.body.appendChild(formHiden);
+
+                            formHiden.action = deleteUrl;
+                            formHiden.method = "post";
+                            formHiden.submit(); // Submit form để gửi yêu cầu DELETE
+                        }
+                    });
+                });
+            </script>
+        </section>
+    </body>
 </html>
-

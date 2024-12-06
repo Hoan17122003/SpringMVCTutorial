@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{Shared/_Layout}">
+<head>
+    <meta charset="UTF-8">
+    <title th:title="${title}">Title</title>
+</head>
+<body>
+
+<div layout:fragment="content" class="box box-primary">
+    <button th:if="${message}" type="button" th:data-message="${message}"
+            class="close message" data-dismiss="alert"
+            aria-label="Close">
+    </button>
+    <div class="box-body">
+        <!--Search Form-->
+        <form id="formSearch" th:action="@{/Shipper}" th:method="get">
+            <div class="input-group">
+
+                <input name="searchValue"
+                       type="text"
+                       class="form-control"
+                       placeholder="Nhập tên nhà giao hàng cần tìm"
+                       autofocus/>
+
+                <div class="input-group-btn">
+                    <button class="btn btn-info" type="submit">
+                        <i class="fa fa-search"><</i>
+                    </button>
+
+                    <a th:href="@{/Shipper/Create}" class="btn btn-primary" style="margin-left:5px">
+                        <i class="fa fa-plus"></i> Bổ sung
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <!--Hiển thị dữ liệu-->
+        <p style="margin-top:10px">
+            có <strong th:text="${rowCount}"></strong> nhà cung cấp trong tổng số <strong
+                th:text="${totalPage}"></strong>
+            trang
+        </p>
+        <div class="table-responsive">
+            <table class="table table-bodered table-hover table-striped">
+                <thead>
+                <tr class="bg-primary">
+                    <th>Tên nhà giao hàng</th>
+                    <th>Số điện thoại</th>
+                    <th style="width:80px"></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="shipper : ${shippers}">
+                    <td th:text="${shipper.shipperName}"></td>
+                    <td th:text="${shipper.phone}"></td>
+                    </td>
+                    <td class="text-right">
+                        <a th:href="@{/Shipper/Edit/{id}(id=${shipper.shipperID})}" class="btn btn-xs btn-info">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <!-- Button trigger modal for delete -->
+                        <button
+                                type="button"
+                                class="btn btn-xs btn-danger delete-btn"
+                                th:data-id="${shipper.getShipperID()}"
+                                th:data-name="${shipper.getShipperName}"
+                                data-toggle="modal"
+                                data-target="#deleteModal"
+                        >
+                            <i class="fa fa-remove"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal -->
+        <div
+                class="modal fade"
+                id="deleteModal"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="deleteModalLabel"
+                aria-hidden="true"
+        >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Bạn có chắc muốn xoá không?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Bạn có chắc chắn muốn xoá nhà giao hàng
+                        <strong id="ShipperName"></strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                        <button type="button" id="confirmDeleteBtn" class="btn btn-primary">Xác nhận xoá</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="text-center">
+            <ul class="pagination">
+                <li th:each="p : ${#numbers.sequence(1, pageCount)}" th:classappend="${p == pageNumber} ? 'active'">
+                    <a th:href="@{/Shipper(pageNumber=${p}, searchValue=${searchValue})}" th:text="${p}">1</a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+             const messageElement = document.querySelector(".message");
+             if(messageElement && messageElement != undefined) {
+                 console.log(`messageElement : ${messageElement}`);
+                 const message = messageElement.getAttribute("data-message");
+                 console.log(`message : ${message}`);
+                 if(message && message != undefined) {
+                    alert(message);
+                 }
+             }
+            const deleteButtons = document.querySelectorAll(".delete-btn");
+            const employeeFullNameElement = document.getElementById("ShipperName");
+            const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+            let selectedEmployeeId = null; // Biến lưu lại employeeID cần xóa
+
+            // Gán sự kiện click cho từng nút xoá
+            deleteButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    const employeeId = this.getAttribute("data-id");
+                    const employeeFullName = this.getAttribute("data-name");
+
+                    // Lưu categoryId để sử dụng khi người dùng xác nhận xoá
+                    selectedEmployeeId = employeeId;
+
+                    // Hiển thị tên loại hàng trong modal
+                    employeeFullNameElement.textContent = employeeFullName;
+                });
+            });
+
+            // Xử lý khi người dùng nhấn "Xác nhận xoá"
+            confirmDeleteBtn.addEventListener("click", function () {
+                if (selectedEmployeeId) {
+                    const deleteUrl = `/Shipper/Delete/${selectedEmployeeId}`;
+                    console.log("DeleteURL : ", deleteUrl);
+                    console.log("comfirmDeleteBTN : ", confirmDeleteBtn);
+                    let formHiden = document.createElement("form");
+                    document.body.appendChild(formHiden);
+
+                    formHiden.action = deleteUrl;
+                    formHiden.method = "post";
+                    formHiden.submit(); // Submit form để gửi yêu cầu DELETE
+                }
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

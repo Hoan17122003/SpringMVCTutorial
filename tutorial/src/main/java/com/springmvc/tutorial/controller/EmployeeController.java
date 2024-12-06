@@ -16,14 +16,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Controller
 @RequestMapping(path = "/Employee")
@@ -61,7 +55,6 @@ public class EmployeeController {
     @GetMapping(path = "/Create")
     public String Create(ModelMap modelMap) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
-        System.out.println("isworking" + employeeDTO.isIsWorking());
         modelMap.addAttribute("employeeDTO", employeeDTO);
         return "Employee/Edit";
     }
@@ -69,29 +62,24 @@ public class EmployeeController {
     @GetMapping(path = "/Edit/{id}")
     public String Update(ModelMap modelMap, @PathVariable("id") Integer id) {
         var employeeDTO = this.mapper.map(this.iEmployeeService.findEmployeeByID(id), EmployeeDTO.class);
-        System.out.println(employeeDTO.getPhoto());
         modelMap.addAttribute("employeeDTO", employeeDTO);
         return "Employee/Edit";
     }
 
-    @PostMapping(path = "/Save",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+    @PostMapping(path = "/Save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String Save(@Valid @ModelAttribute("employeeDTO") EmployeeDTO employeeDTO,
                        @RequestParam(value = "uploadPhoto", required = false, defaultValue = "null") MultipartFile file,
                        @RequestParam(value = "employeeId", required = false) Integer id,
-                       BindingResult result, ModelMap model) throws IOException {
-
+                       BindingResult result, ModelMap model) {
         // Kiểm tra lỗi validation trước khi tiếp tục xử lý
         if (result.hasErrors()) {
-            System.out.println("employeeDTO" + employeeDTO);
-//            return "employeeForm"; // Trả lại view cùng với lỗi validate
+            return "Product/Edit";
         }
         // Kiểm tra nếu không có file hoặc file rỗng
         if (file == null || file.isEmpty()) {
             System.out.println("fileError");
-//            model.addAttribute("fileError", "File upload is required");
-//            return "employeeForm";
+            // model.addAttribute("fileError", "File upload is required");
+            // return "employeeForm";
         }
         if (file != null && !file.isEmpty()) {
             String urlFile = this.strorageService.storeFile(file);
@@ -108,5 +96,15 @@ public class EmployeeController {
         return "redirect:/Employee";
     }
 
+    @PostMapping(path = "/Delete/{employeeId}")
+    public String Delete(@PathVariable("employeeId") Integer employeeId, RedirectAttributes redirectAttributes) {
+        boolean isDeleted = this.iEmployeeService.deleteEmployeeById(employeeId);
+        if (isDeleted) {
+            redirectAttributes.addFlashAttribute("successMessage", "Employee deleted successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error deleting employee!");
+        }
+        return "redirect:/Employee";
+    }
 
 }

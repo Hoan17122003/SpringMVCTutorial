@@ -8,15 +8,17 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.springmvc.tutorial.enums.ERoleName;
+import com.springmvc.tutorial.decorator.enums.ERoleName;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Setter
 @Getter
+@Data
 public class EmployeeDTO {
 
     private int employeeId;

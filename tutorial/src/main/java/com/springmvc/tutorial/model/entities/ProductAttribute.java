@@ -2,9 +2,13 @@ package com.springmvc.tutorial.model.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "ProductAttributes")
-public class ProductAttribute {
+public class ProductAttribute implements Serializable {
+    private static final long serialVersionUID = 1L; // Thêm serialVersionUID
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

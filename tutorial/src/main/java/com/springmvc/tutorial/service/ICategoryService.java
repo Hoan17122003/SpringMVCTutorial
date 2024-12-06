@@ -1,6 +1,8 @@
 package com.springmvc.tutorial.service;
 
 import com.springmvc.tutorial.model.entities.Category;
+import com.springmvc.tutorial.model.entities.ProductAttribute;
+import com.springmvc.tutorial.model.entities.ProductPhoto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -21,4 +23,6 @@ public interface ICategoryService {
     public Category findCategoryById(int id);
 
     public void deleteCategory(int id);
+
+   
 }

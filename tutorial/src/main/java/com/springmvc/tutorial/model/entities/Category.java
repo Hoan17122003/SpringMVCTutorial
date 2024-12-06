@@ -5,25 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "Categories")
-public class Category {
+public class Category implements Serializable {
+    private static final long serialVersionUID = 1L; // Thêm serialVersionUID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(
-            name = "CategoryID"
-    )
+    @Column(name = "CategoryID")
     private int categoryId;
 
-    @Column(
-            name = "CategoryName"
-    )
+    @Column(name = "CategoryName")
     private String categoryName;
-    @Column(
-            name = "Description"
-    )
+    @Column(name = "Description")
     private String Description;
 
     public Category() {
@@ -33,7 +29,6 @@ public class Category {
         this.categoryName = categoryName;
         Description = description;
     }
-
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
@@ -55,11 +50,8 @@ public class Category {
         return Description;
     }
 
-    //relationship in Categories
-    @OneToMany(
-            mappedBy = "category"
-            , cascade = CascadeType.ALL
-    )
+    // relationship in Categories
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     public List<Product> products;
 
     @Override

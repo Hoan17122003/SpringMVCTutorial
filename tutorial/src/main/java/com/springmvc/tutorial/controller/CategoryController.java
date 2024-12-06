@@ -4,6 +4,7 @@ import com.springmvc.tutorial.model.entities.Category;
 import com.springmvc.tutorial.service.ICategoryService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +24,20 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping(path = "/login")
+    public String Login(ModelMap modelMap) {
+        return "auth/login";
+    }
+
+    @PostMapping("/login")
+    public String LoginPost() {
+        return "redirect:/";
+    }
+
     @GetMapping
     public String Index(ModelMap modelMap,
-                        @RequestParam(defaultValue = "1") Integer page,
-                        @RequestParam(defaultValue = "") String searchValue) {
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "") String searchValue) {
 
         List<Category> categories = categoryService.getPaginatedCategoriesOfPage(page, PAGE_SIZE, searchValue);
         Long rowCount = this.categoryService.RowCount();
@@ -55,7 +66,7 @@ public class CategoryController {
     }
 
     @PostMapping(path = "/Save"
-            // , consumes = {"application/json"}
+    // , consumes = {"application/json"}
     )
     // use @ModelAttribute annotation when thymeleaf because it's use mvc
     // achitecture and use @RequestBody annotation when RestfullAPI
@@ -73,5 +84,11 @@ public class CategoryController {
     public String DeleteCategory(@PathVariable("id") Integer id) {
         this.categoryService.deleteCategory(id);
         return "redirect:/Category";
+    }
+
+    @GetMapping(path = "/getAll")
+    public ResponseEntity getAllCategory(@RequestParam(value = "SearchValue") String searchValue) {
+        var categories = this.categoryService.getPaginatedCategoriesOfPage(1, PAGE_SIZE, searchValue);
+        return ResponseEntity.ok(categories);
     }
 }

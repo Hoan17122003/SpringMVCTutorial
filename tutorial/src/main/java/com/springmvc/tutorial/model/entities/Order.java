@@ -14,72 +14,44 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(
-            name = "OrderID",
-            columnDefinition = "int"
-    )
+    @Column(name = "OrderID", columnDefinition = "int")
     private int orderID;
 
-    @Column(
-            name = "CustomerID",
-            columnDefinition = "int",
-            nullable = false
-    )
+    @Column(name = "CustomerID", columnDefinition = "int", nullable = false)
     private int customerID;
 
-    @Column(
-            name = "OrderTime",
-            nullable = false,
-            columnDefinition = "datetime"
-    )
+    @Column(name = "OrderTime", nullable = false, columnDefinition = "datetime")
     private LocalDateTime orderTime = LocalDateTime.now();
 
-    @Column(
-            name = "DeliveryProvince",
-            columnDefinition = "nvarchar(255)"
-    )
+    @Column(name = "DeliveryProvince", columnDefinition = "nvarchar(255)", nullable = false)
     private String deliveryProvince;
 
-    @Column(
-            name = "deliveryAddress"
-            , columnDefinition = "nvarchar(255)"
-    )
+    @Column(name = "deliveryAddress", columnDefinition = "nvarchar(255)", nullable = false)
     private String deliveryAddress;
 
-    @Column(
-            name = "EmployeeID",
-            columnDefinition = "int"
-    )
+    @Column(name = "EmployeeID", columnDefinition = "int", nullable = false)
     private Integer employeeID = null;
 
-    @Column(
-            name = "AcceptTime",
-            columnDefinition = "datetime"
-    )
+    @Column(name = "AcceptTime", columnDefinition = "datetime")
     private LocalDateTime acceptTime = null;
 
-    @Column(
-            name = "ShipperID",
-            columnDefinition = "int default null"
-    )
+    @Column(name = "ShipperID", columnDefinition = "int default null")
     private Integer shipperID;
 
-    @Column(
-            name = "ShippedTime",
-            columnDefinition = "datetime"
-    )
+    @Column(name = "ShippedTime", columnDefinition = "datetime")
     private LocalDateTime ShippedTime = null;
 
-    @Column(
-            columnDefinition = "datetime",
-            name = "FinishedTime"
-    )
+    @Column(columnDefinition = "datetime", name = "FinishedTime")
     private LocalDateTime finishedTime;
+
+    @Column(columnDefinition = "int default 0", nullable = false)
+    private int status;
 
     public Order() {
     }
 
-    public Order(int customerID, LocalDateTime orderTime, String deliveryProvince, String deliveryAddress, Integer employeeID, LocalDateTime acceptTime, Integer shipperID, LocalDateTime shippedTime) {
+    public Order(int customerID, LocalDateTime orderTime, String deliveryProvince, String deliveryAddress,
+            Integer employeeID, LocalDateTime acceptTime, Integer shipperID, LocalDateTime shippedTime) {
         this.customerID = customerID;
         this.orderTime = orderTime;
         this.deliveryProvince = deliveryProvince;
@@ -88,6 +60,14 @@ public class Order {
         this.acceptTime = acceptTime;
         this.shipperID = shipperID;
         ShippedTime = shippedTime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public void setFinishedTime(LocalDateTime finishedTime) {
@@ -198,37 +178,25 @@ public class Order {
         return shipperRelations;
     }
 
+    // relations
 
-    //relations
-
-    @ManyToOne
-    @JoinColumn(
-            insertable = false,
-            updatable = false, name = "CustomerID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(insertable = false, updatable = false, name = "CustomerID")
     private Customer customerRelations;
 
-    @ManyToOne
-    @JoinColumn(
-            insertable = false,
-            updatable = false, name = "EmployeeID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(insertable = false, updatable = false, name = "EmployeeID")
     private Employee employeeRelations;
 
-    @ManyToOne
-    @JoinColumn(
-            insertable = false,
-            updatable = false,
-            name = "Status"
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(insertable = false, updatable = false, name = "Status")
     private OrderStatus orderStatusRelations;
 
-    @ManyToOne
-    @JoinColumn(
-            insertable = false,
-            updatable = false,
-            name = "ShipperID"
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
+
+    @JoinColumn(insertable = false, updatable = false, name = "ShipperID")
     private Shipper shipperRelations;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 }

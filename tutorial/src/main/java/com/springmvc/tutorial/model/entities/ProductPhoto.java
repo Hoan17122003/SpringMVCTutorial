@@ -3,62 +3,43 @@ package com.springmvc.tutorial.model.entities;
 import jakarta.persistence.*;
 import lombok.Builder;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "ProductPhotos")
-public class ProductPhoto {
+public class ProductPhoto implements Serializable {
+        private static final long serialVersionUID = 1L; // Thêm serialVersionUID
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(
-            name = "PhotoID",
-            columnDefinition = "int"
-    )
-    private int photoId;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "PhotoID", columnDefinition = "int")
+        private int photoId;
 
-    @Column(
-            name = "productID",
-            nullable = false,
-            columnDefinition = "int"
-    )
-    private int productID;
+        @Column(name = "productID", nullable = false, columnDefinition = "int")
+        private int productID;
 
-    @Column(
-            name = "Photo",
-            nullable = false,
-            columnDefinition = "nvarchar(255)"
-    )
-    private String photo;
+        @Column(name = "Photo", nullable = false, columnDefinition = "nvarchar(255)")
+        private String photo;
 
-    @Column(
-            name = "Description",
-            nullable = false,
-            columnDefinition = "nvarchar(255)"
-    )
-    private String description;
+        @Column(name = "Description", nullable = false, columnDefinition = "nvarchar(255)")
+        private String description;
 
-    @Column(
-            name = "DisplayOrder",
-            nullable = false
-    )
-    private int DisplayOrder;
+        @Column(name = "DisplayOrder", nullable = false)
+        private int DisplayOrder;
 
-    @Column(
-            name = "IsHidden",
-            columnDefinition = "bit",
-            nullable = false
-    )
-    private boolean isHidden;
+        @Column(name = "IsHidden", columnDefinition = "bit default(1)", nullable = false)
+        private boolean isHidden;
 
-    //----------- relations in ProductPhotos
+        // ----------- relations in ProductPhotos
 
-    @ManyToOne
-    @JoinColumn(name = "ProductID", referencedColumnName = "ProductID", updatable = false, insertable = false)
-    private Product product;
+        @ManyToOne
+        @JoinColumn(name = "ProductID", referencedColumnName = "ProductID", updatable = false, insertable = false)
+        private Product product;
 
     public ProductPhoto() {
     }
 
-    public ProductPhoto(int productID, String photo, String description, int displayOrder, boolean isHidden) {
+    public ProductPhoto( int productID, String photo, String description,int displayOrder, boolean isHidden){
         this.productID = productID;
         this.photo = photo;
         this.description = description;
@@ -66,55 +47,55 @@ public class ProductPhoto {
         this.isHidden = isHidden;
     }
 
-    public int getPhotoId() {
+        public int getPhotoId () {
         return photoId;
     }
 
-    public int getProductID() {
+        public int getProductID () {
         return productID;
     }
 
-    public String getPhoto() {
+        public String getPhoto () {
         return photo;
     }
 
-    public String getDescription() {
+        public String getDescription () {
         return description;
     }
 
-    public int getDisplayOrder() {
+        public int getDisplayOrder () {
         return DisplayOrder;
     }
 
-    public boolean isHidden() {
+        public boolean isHidden () {
         return isHidden;
     }
 
-    public Product getProduct() {
+        public Product getProduct () {
         return product;
     }
 
-    public void setProductID(int productID) {
+        public void setProductID ( int productID){
         this.productID = productID;
     }
 
-    public void setPhoto(String photo) {
+        public void setPhoto (String photo){
         this.photo = photo;
     }
 
-    public void setDescription(String description) {
+        public void setDescription (String description){
         this.description = description;
     }
 
-    public void setDisplayOrder(int displayOrder) {
+        public void setDisplayOrder ( int displayOrder){
         DisplayOrder = displayOrder;
     }
 
-    public void setHidden(boolean hidden) {
+        public void setHidden ( boolean hidden){
         isHidden = hidden;
     }
 
-    public void setProduct(Product product) {
+        public void setProduct (Product product){
         this.product = product;
     }
-}
+    }

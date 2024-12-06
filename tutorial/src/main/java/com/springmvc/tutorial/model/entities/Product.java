@@ -1,91 +1,69 @@
 package com.springmvc.tutorial.model.entities;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "products")
-public class Product {
+@EntityListeners(ProductEntityListener.class)
+public class Product implements Serializable {
+
+    private static final long serialVersionUID = 1L; // Thêm serialVersionUID
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(
-//            name = "ProductID",
-//            nullable = false,
-//            columnDefinition = "int"
-//    )
+    // @Column(
+    // name = "ProductID",
+    // nullable = false,
+    // columnDefinition = "int"
+    // )
     private int ProductID;
 
-    @Column(
-            name = "ProductName",
-            columnDefinition = "nvarchar(255)",
-            nullable = false
-    )
-    @NotEmpty
+    @Column(name = "ProductName", columnDefinition = "nvarchar(255)", nullable = false)
+    // @NotEmpty(message = "productName không được để trống tên sản phẩm")
+    @NotNull(message = "productName không được để trống tên sản phẩm")
     private String productName;
 
-    @Column(
-            name = "ProductDescription",
-            columnDefinition = "nvarchar(255)"
-    )
-//    @NotEmpty(message = "not null value")
+    @Column(name = "ProductDescription", columnDefinition = "nvarchar(255)")
+    @NotNull(message = "productDescription không được để trống tên sản phẩm")
     private String productDescription;
-
-    @Column(
-            name = "SupplierID",
-            columnDefinition = "int"
-
-    )
+    @Column(name = "SupplierID", columnDefinition = "int")
     @NotNull(message = "supplier is not null")
     private int supplierID;
 
-    @Column(
-            name = "CategoryID",
-            columnDefinition = "int"
-    )
+    @Column(name = "CategoryID", columnDefinition = "int")
     @NotNull(message = "category is not null ")
     private int categoryID;
 
-    @Column(
-            name = "Unit",
-            columnDefinition = "nvarchar(255)",
-            nullable = false
-    )
-    @NotEmpty
+    @Column(name = "Unit", columnDefinition = "nvarchar(255)", nullable = false)
+    @NotNull(message = "Unit không được để trống tên sản phẩm")
     private String unit;
 
-    @Column(
-            name = "Price",
-            columnDefinition = "decimal(15,2)",
-            nullable = false
-    )
-//    @NotEmpty
-//    @NotBlank(message = "price is not a string")
+    @Column(name = "Price", columnDefinition = "decimal(15,2)", nullable = false)
+    @NotNull(message = "price is not null")
     private double price;
 
-    @Column(
-            name = "Photo",
-            columnDefinition = "nvarchar(255)"
-    )
+    @Column(name = "Photo", columnDefinition = "nvarchar(255)")
     private String Photo;
 
-    @Column(
-            name = "IsSelling",
-            columnDefinition = "bit"
-    )
+    @Column(name = "IsSelling", columnDefinition = "bit")
     @NotNull(message = "is selling not null ")
     private boolean isSelling;
 
     public Product() {
     }
 
-    public Product(String productName, String productDescription, int supplierID, int categoryID, String unit, double price, String photo, boolean isSelling) {
+    public Product(String productName, String productDescription, int supplierID, int categoryID, String unit,
+            double price, String photo, boolean isSelling) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.supplierID = supplierID;
@@ -169,21 +147,14 @@ public class Product {
     @JoinColumn(name = "CategoryID", updatable = false, insertable = false)
     private Category category;
 
-    @OneToMany(
-            mappedBy = "product"
-            , cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductPhoto> productPhotos;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductAttribute> productAttributes;
 
     @ManyToOne
-    @JoinColumn(
-            name = "SupplierID",
-            updatable = false,
-            insertable = false
-    )
+    @JoinColumn(name = "SupplierID", updatable = false, insertable = false)
     private Supplier supplier;
 
     @OneToMany(mappedBy = "product")

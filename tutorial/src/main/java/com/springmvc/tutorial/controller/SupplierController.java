@@ -4,6 +4,7 @@ import com.springmvc.tutorial.model.entities.Product;
 import com.springmvc.tutorial.model.entities.Supplier;
 import com.springmvc.tutorial.model.repository.supplier.ISupplierRepository;
 import com.springmvc.tutorial.model.repository.supplier.impl.SupplierRepository;
+import com.springmvc.tutorial.service.IStorageService;
 import com.springmvc.tutorial.service.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.QueryAnnotation;
@@ -12,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,63 +24,77 @@ import java.util.Optional;
 @RequestMapping(path = "/Supplier")
 public class SupplierController {
 
-    private static int pageSize = 10;
+    private static int PAGE_SIZE = 10;
 
     private final ISupplierService supplierService;
+    private final IStorageService storageService;
 
     @Autowired
-    public SupplierController(ISupplierService supplierService) {
+    public SupplierController(ISupplierService supplierService, IStorageService storageService) {
         this.supplierService = supplierService;
+        this.storageService = storageService;
     }
 
 
-    @GetMapping(path = "")
+    @GetMapping
     public String Index(ModelMap modelMap,
-                        @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
-                        @RequestParam(name = "searchValue", required = false) String searchValue
+                        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") Integer pageNumber,
+                        @RequestParam(name = "searchValue", required = false, defaultValue = "") String searchValue,
+                        @RequestParam(name = "message", required = false, defaultValue = "") String message
     ) {
         modelMap.addAttribute("title", "Supplier Page");
-        if (pageNumber == null) {
-            pageNumber = 1;
-        }
-        if (searchValue == null) {
-            searchValue = " ";
-        }
         // count suppliers
-        Long count = this.supplierService.countSupplier();
-        // cal page
-        int totalPages = (int) Math.ceil((double) count / pageSize);
+        Long rowCount = this.supplierService.countSupplier(searchValue);
+        Double count = (double) rowCount / PAGE_SIZE;
+        int totalPage = (int) Math.ceil(count);
         // pagnation page
-//        Optional<Supplier> data = this.supplierService.getDataPage(pageNumber, pageSize, searchValue);
-        List<Supplier> suppliers = this.supplierService.getAllSupplier();
-//        if (!suppliers.isPresent()) {
-//            modelMap.addAttribute("message", "Không có dữ liệu");
-//        }
-        suppliers.stream().forEach(supplier -> System.out.println("supplier = " + supplier.getSupplierName()));
-        modelMap.addAttribute("totalPage", totalPages);
-        modelMap.addAttribute("count", count);
+        var suppliers = this.supplierService.getDataPage(pageNumber, PAGE_SIZE, searchValue).stream().toList();
+        modelMap.addAttribute("totalPage", totalPage);
+        modelMap.addAttribute("pageNumber", pageNumber);
+        modelMap.addAttribute("rowCount", rowCount);
         modelMap.addAttribute("suppliers", suppliers);
-        return "Supplier/Edit";
+        modelMap.addAttribute("message", message);
+        return "Supplier/Index";
     }
 
-    @GetMapping(path = "/create")
+    @GetMapping(path = "/Create")
     public String Create(ModelMap modelMap) {
         Supplier supplier = new Supplier();
         modelMap.addAttribute("supplier", supplier);
         return "Supplier/Edit";
     }
 
-    @GetMapping(path = "/Edit")
-    public String Edit() {
+    @GetMapping(path = "/Edit/{id}")
+    public String Edit(@PathVariable("id") Integer id, ModelMap modelMap) {
+        var supplier = this.supplierService.findSupplierById(id);
+        modelMap.addAttribute("supplier", supplier);
+
+
         return "Supplier/Edit";
     }
 
     @PostMapping(path = "/Save")
-    public String Save(@RequestBody() Supplier supplier) {
-        if (supplier == null) {
-            return "";
+    public String Save(@ModelAttribute Supplier supplier,
+                       @RequestParam(value = "uploadPhoto", required = false, defaultValue = "null") MultipartFile file,
+                       @RequestParam(value = "supplierID", required = false) Integer supplierID
+    ) {
+        if (file != null && !file.isEmpty()) {
+            String urlFile = this.storageService.storeFile(file);
+            supplier.setLogo(urlFile);
+        }
+        if (supplierID == null) {
+            this.supplierService.saveSupplier(supplier);
+        } else {
+            this.supplierService.updateSupplier(supplier, supplierID);
         }
         this.supplierService.saveSupplier(supplier);
-        return "redirect:/Supplier/";
+        return "redirect:/Supplier";
+    }
+
+    @PostMapping("/Delete/{id}")
+    public ModelAndView Delete(@PathVariable("id") Integer supplierId, ModelMap modelMap) {
+        this.supplierService.deleteSupplierById(supplierId);
+        modelMap.addAttribute("message", "Xoá thành Công");
+        return new ModelAndView("redirect:/Supplier", modelMap);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
         this.repository = repository;
     }
 
+
     @Override
     public List<Employee> getAllEmployee() {
         return this.repository.findAll();
@@ -34,7 +36,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Transactional
     public List<Employee> getPaginatedEmployeeOfPage(Integer page, int PAGE_SIZE, String searchValue) {
         Pageable pageable = PageRequest.of(page - 1, PAGE_SIZE); // Tạo Pageable object
-        List<Employee> result = this.repository.findByfullNameContaining(searchValue, pageable).stream().toList();
+        List<Employee> result = this.repository.findByFullNameContaining(searchValue, pageable).stream().toList();
         return result;
     }
 
@@ -64,5 +66,15 @@ public class EmployeeServiceImpl implements IEmployeeService {
     @Override
     public void save(Employee employee) {
         this.repository.save(employee);
+    }
+
+    @Override
+    public boolean deleteEmployeeById(int employeeID) {
+        this.repository.deleteById(employeeID);
+        return true;
+    }
+
+    public Employee findByEmail(String email) {
+        return this.repository.findByEmail(email);
     }
 }

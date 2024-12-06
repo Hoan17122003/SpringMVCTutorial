@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{Shared/_Layout}"
+>
+    <head>
+        <title th:title="${title}">Order Detail</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <div th:fragment="searchProduct">
+            <div th:each="item : ${products}">
+                <form
+                    class="formAddToCart"
+                    th:action="@{/Order/AddToCart}"
+                    th:method="post"
+                    style="background-color: #fff; border: 1px solid #ccc; margin: 5px 0px 5px 0px; padding: 5px"
+                >
+                    <input type="hidden" name="ProductID" th:value="${item.getProductID()}" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <strong th:text="${item.ProductName}">Tên sản phẩm</strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <img
+                                th:if="${!#strings.isEmpty(item.Photo)}"
+                                class="img img-responsive img-bordered"
+                                th:src="@{/uploads/{Photo}(Photo=${item.Photo})}"
+                            />
+                            <img
+                                th:unless="${!#strings.isEmpty(item.Photo)}"
+                                th:src="@{/images/{Photo}(Photo='nophoto.png')}"
+                                class="img img-responsive img-bordered"
+                            />
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="form-group-sm">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <label>Giá bán:</label>
+                                        <section th:text="${item.price}"></section>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label>Số lượng:</label>
+                                        <input class="form-control" type="number" value="1" min="1" name="amount" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group-sm" style="margin-top: 2px">
+                                <button type="submit" class="btn btn-sm btn-primary addToCart">
+                                    <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".formAddToCart").forEach((form) => {
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const data = {
+                    productID: formData.get("ProductID"),
+                    quanlity: formData.get("Quantity"),
+                };
+                console.log(`data : ${data} `);
+
+                await fetch(this.action, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: data,
+                })
+                    .then((response) => response.text())
+                    .then((data) => {
+                        document.getElementById("addToCart").innerHTML = data;
+                    })
+                    .catch((error) => console.error("Error:", error));
+            });
+        });
+    });
+</script> -->
+    </body>
+</html>
